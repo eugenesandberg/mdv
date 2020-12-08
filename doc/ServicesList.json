@@ -1,0 +1,9 @@
+{
+  "fnmoc_hycom":  {"url": "https://portal.fnmoc.navy.mil/geoserver/HYCOM_GLOBAL/wms", "res": "2880x1441", "param": "HYCOM_GLOBAL", "more": "False"},
+  "fnmoc_ww3":    {"url": "https://portal.fnmoc.navy.mil/geoserver/WW3_GLOBAL/wms",   "res": "1440x721",  "param": "WW3_GLOBAL",   "more": "False"},
+  "fnmoc_navgem": {"url": "https://portal.fnmoc.navy.mil/geoserver/NAVGEM/wms",       "res": "1440x721",  "param": "NAVGEM",       "more": "False"},
+
+  "fnmoc_hycom2":  {"url": "https://portal.fnmoc.navy.mil/geoserver/HYCOM_GLOBAL/wms", "res": "2880x1441", "param": "HYCOM_GLOBAL", "more": "True"},
+  "fnmoc_ww32":    {"url": "https://portal.fnmoc.navy.mil/geoserver/WW3_GLOBAL/wms",   "res": "1440x721",  "param": "WW3_GLOBAL",   "more": "True"},
+  "fnmoc_navgem2": {"url": "https://portal.fnmoc.navy.mil/geoserver/NAVGEM/wms",       "res": "1440x721",  "param": "NAVGEM",       "more": "True"}
+}

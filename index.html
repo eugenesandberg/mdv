@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>MDVx - METOC Data Viewer</title>
+
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/claro.css">
+  <link rel="stylesheet" type="text/css" href="css/esri.css">
+  <link rel="stylesheet" type="text/css" href="css/layout.css">
+  <link rel="stylesheet" type="text/css" href="css/layerSelect.css">
+  <link rel="stylesheet" type="text/css" href="css/profile.css">
+  <link rel="stylesheet" type="text/css" href="css/slideInPanel.css">  
+  <link rel="stylesheet" type="text/css" href="css/WMSLayerTools.css">
+
+  <script src="https://d3js.org/d3.v5.js"></script>
+  <script type="text/javascript">
+    var dojoConfig = {
+      parseOnLoad: true,
+      paths: {
+        plugins: location.pathname.replace(/\/[^/]+$/, "") + "/plugins"
+      }
+    };
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.33/init.js"></script>
+  <script type="text/javascript">
+    dojo.require("dijit.dijit"); // optimize: load dijit layer
+    dojo.require("dijit.layout.BorderContainer");
+    dojo.require("dijit.layout.ContentPane");
+    dojo.require("dijit.layout.StackContainer");
+  </script>
+  <script type="text/javascript" src="javascript/layout.js"></script>
+  <script type="text/javascript" src="javascript/profile.js"></script>
+  <script type="text/javascript" src="javascript/eventSlider.js"></script>
+  <script type="text/javascript" src="javascript/nDimSlider.js"></script>
+  <script type="text/javascript" src="javascript/WMSLayerWithTime.js"></script>
+  <script type="text/javascript" src="javascript/windy.js"></script>
+  <script type="text/javascript" src="javascript/contextMenu.js"></script>
+  <script type="text/javascript" src="javascript/slideInPanel.js"></script>
+  <script type="text/javascript" src="javascript/WMSLayerTools.js"></script>  
+  <script type="text/javascript">
+    function init() {
+      initMap();
+    }
+    // Show map on load
+    dojo.addOnLoad(init);
+  </script>
+</head>
+
+<!-- BODY START ============================================================ -->
+
+<body onResize="resetLayout()" class="claro">
+<div id="securityBanner">UNCLASSIFIED</div>
+
+<div id="mainWindow" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props='design:"headline",gutters:false'>
+  <!-- DOD Warning Banner -->
+  <div id="DODNoticeFrame">
+    <div id="DODNoticePanel">
+      <div class="c"><strong><u>Notice and Consent</u></strong></div><br/>
+You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.<br/><br/>
+By using this IS (which includes any device attached to this IS), you consent to the following conditions:<br/><br/>
+- The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.<br/><br/>
+- At any time, the USG may inspect and seize data stored on this IS.<br/><br/>
+- Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG- authorized purpose.<br/><br/>
+- This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.<br/><br/>
+- Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.<br/><br/>
+      <div class="c"><button id="DODAcceptBtn" onclick="acceptDODWarning()">OK</button></div>
+    </div>
+  </div>
+  <!-- Service Outage Notice -->
+  <div id="serviceOutageFrame" >
+	<div id="serviceOutagePanel">
+		<div id="outagebanner" class="c warning"><strong><u>SERVICE OUTAGE NOTICE</u></strong></div><br/>
+		<div id="message" class="c">The following models and layers are currently unavailable.<br/>Please use other data layers for now and check back later.</div><br/>
+		<div id="outageList"></div><br/>
+		<div class="c"><button id="outageAcceptBtn" onclick="acceptOutageWarning()">OK</button></div>
+	</div>
+  </div>
+  <!-- Show time of loaded layer -->
+  <div id="timePanel" class="hiddenElem">
+    <div id="timeLabel"></div>
+  </div>
+
+  <!-- Show name of loaded layer -->
+  <div id="namePanel" class="hiddenElem">
+    <div id="nameLabel"></div>
+  </div>
+
+  <!-- Custom Layer Panel -->
+  <div id="CustomLayerPanel">
+	<div id="customLayerDialog" class="">
+      <div id="closeButtonSpacer"></div>
+      <div id="closeCustomLayerButton" onclick="closeCustomLayerPanel()">&times;</div>
+      <div id="customLayerHeader">Add Custom Layer</div>
+	  <!-- tabs div -->
+	  <div class="tab">
+		<button class="tablinks active" onclick="openTab(event, 'customWMSDialog')">WMS</button>
+		<button class="tablinks" onclick="openTab(event, 'customKMLDialog')">KML</button>
+	  </div>
+	  <div id="customWMSDialog" class="layerSelectTabcontent" style="display:block;">
+		  <div id="customWMSInfo" class="customlayerInfo">
+			Add a custom Web Map Service endpoint here. The WMS must have at least one layer with dimensions.<br/><br/>
+			For more information please view our <a href="https://raw.github.com/esri/WMSMultiDimensionalEsriViewer/master/doc/VisMultiDimWMS.pdf" target="_blank">help file</a>.<br/>
+		  </div>
+		  <input id="wmsTextInput" class="layerTextIn" type="text" name="wmsTextInput" value="https://portal.fnmoc.navy.mil/geoserver/HYCOM_GLOBAL/wms"/>
+		  <button type='button' onclick="loadCustomWMSCapabilities()">Load WMS Layers</button>
+		  <div id="layerSelector">
+			<div id="radioButtonGroup"></div>
+			<button type='button' onclick="addCustomWMSLayer()">Add Selected Layer to Map</button>
+		  </div>
+		</div>
+		<div id="customKMLDialog" class="layerSelectTabcontent">
+			<div id="customKMLInfo" class="customlayerInfo">
+				Add a custom KML endpoint here.<br/><br/>
+			</div>
+			<input id="kmlTextInput" class="layerTextIn" type="text" name="kmlTextInput" value=""/>
+			<button type='button' onclick="kmlAdd()">Load KML Layers</button>
+		</div>
+	</div>
+  </div>
+	
+  <!-- Map Section -->
+  <div id="map" data-dojo-type="dijit.layout.ContentPane" data-dojo-props='region:"center"' style='padding:0px'>
+	<!-- refresh layer button -->
+	<div id="refreshLayer">
+		<button id="refreshButton" title="Refresh Layer" disabled="disabled" onclick="refreshLayer()">&#8635;</button>
+	</div>
+	<!-- home button -->
+	<div id="homeBtnLayer">
+		<button id="homeBtn" title="Home" onclick="zoomTo()">&#x1F3E0;</button>
+	</div>
+	<!-- Bounding Box Zoom -->
+	<div id="bboxZoom" style="color:white;">
+	<label class="switch">
+        <input id="bboxchk" type="checkbox" onchange="bboxChange(this)" />
+        <span class="slider round"></span>
+      </label>
+      Bounding Box Zoom
+		
+	</div>
+    <!-- Start and Stop Windy Particles -->
+    <div id="WindyToggle">
+      <label class="switch">
+        <input type="checkbox" id="windyToggleBtn" onclick="toggleWindyVectors()" checked />
+        <span class="slider round" id="windyToggleBtnRound" title="UNCLASSIFIED - Wind Data from NAVGEM"></span>
+      </label>
+      Show particle animation
+        <label>
+          <button id="windySettingsBtn" class="gear" onclick="openWindySettings()" title="Settings">&#9881;</button>
+        </label>
+    </div>
+	<div id="outaegIconLayer">
+		<button id="outageButton" class="outageButtonStyle" onclick="showOutageBox()">&#x26A0;</button>
+	</div>
+    <!-- Basemap Toggle -->
+    <div id="BasemapToggle"></div>
+    <!-- Depth Slider -->
+    <div id="leftChart" data-dojo-type="dijit.layout.ContentPane">
+      <div id="elevationSliderPanel" data-dojo-type="dijit.layout.ContentPane"></div>
+    </div>
+    <!-- Time Slider and Animation Buttons -->
+    <div id="footer" data-dojo-type="dijit.layout.ContentPane">    
+      <div id="timeSliderFooter">
+        <table width="100%"><tr><td width="80">
+          <br/>
+          <button id="animPlayBtn" onmouseover="dijit.Tooltip.defaultPosition=['above', 'below']" onclick="animationPlay();" ><img src="./images/Button-Play-16.png"/></button>
+          <div class="dijitHidden"><span data-dojo-type="dijit.Tooltip" data-dojo-props="connectId:'animPlayBtn'">Animate&nbsp;&nbsp;</span></div>
+          <br/>
+          <button id="animBackwordBtn" onmouseover="dijit.Tooltip.defaultPosition=['above', 'below']" onclick="animationGoBackward();" ><img src="./images/Button-Prev-16.png"/></button>
+          <div class="dijitHidden"><span data-dojo-type="dijit.Tooltip" data-dojo-props="connectId:'animBackwordBtn'">Previous Event</span></div>
+          <button id="animForwardBtn" onmouseover="dijit.Tooltip.defaultPosition=['above', 'below']" onclick="animationGoForward();" ><img src="./images/Button-Next-16.png"/></button>
+          <div class="dijitHidden"><span data-dojo-type="dijit.Tooltip" data-dojo-props="connectId:'animForwardBtn'">Next Event</span></div>
+		  
+        </td>
+		<td width="80"> 
+			<div id="layerLoadingDiv" style="margin-top:40%;"><img src="images/loader.gif" id="loading_img" width="20px" height="20px"></img></div>
+		</td>
+		<td>
+          <div id="eventSliderPanel" data-dojo-type="dijit.layout.ContentPane"></div>
+        </td></tr></table>
+      </div>
+    </div>
+    <!-- Layer Selector -->
+    <div id="mainLayerSelector">
+      <button id="mlsUpArrow" style="display: none;" onmousedown="mlsScroll(1)">&uarr;</button>
+      <button id="mlsDownArrow" style="display: none;" onmousedown="mlsScroll(0)">&darr;</button>
+      <button id="btnSubmitCustomLayer">[ Add Custom Layer ]</button><br/>
+      <button id="mlsShowButton" onclick="toggleMoreLayers()">[ Show More Layers ]</button><br/>
+      <button id="legend" onclick="showLegend()">[ Show Map Legend ]</button><br/>
+	  <button id="clearLayers" onclick="clearCurrentLayer()">[ Clear Current Layer ]</button><br/>
+	  <input type="search" id="search" name="search"  oninput="searchLayers();" placeholder="Search..." /><br/>
+      <div id="layerContainer">
+        <div id="sublayerContainer"></div>
+      </div>
+	  <div id="searchDiv" style="display:none;">
+	  
+	  </div>
+    </div>
+  </div>
+
+  <!-- Particle Settings for Windy -->
+  <div id="ParticleSettingsPanel">
+    <div id="ParticleSettingsDialog">
+      <div id="settingSpacer">
+        <label class="settingSwitch">
+          <input type="checkbox" id="windWaveToggleBtn" onclick="windWaveSettingsToggle()"/>
+          <span class="windWaveSlider round">
+            <p id="windWaveValue">Wave</p>
+          </span>
+      </label>
+    </div>
+      <div id="closeParticleSettingsButton" onclick="closeWindySettings()">&times;</div>
+      <div id="SettingsHeader">Settings</div>
+	  <div id="ParticleSection" class="subHeading">Particle Settings</div>
+      <div class="settingContainer">
+        <s1 style="width: 200px;">
+          <label class="sliderHeader">Particle Count:</label>
+          <value class="sliderValue" id="windyParticleDisplay">100</value>%
+          <input type="range" autocomplete="off" min="0" max="20" value="10" class="settingSlider" id="windyParticle" onchange="updateWindySettings()">
+        </s1>
+        <s2 style="width: 200px;">
+          <label class="sliderHeader">Particle Velocity:</label>
+          <value class="sliderValue" id="windyVelocityDisplay">100</value>%
+          <input type="range" autocomplete="off" min="0" max="20" value="10" class="settingSlider" id="windyVelocity" onchange="updateWindySettings()">
+        </s2>
+        <form id="WindForm" style="display: inline">
+          <p>Wind Intensity Color Scale:</p>
+          <input type="radio" id="grayToWhite" name ="WindColorscale" value="0" checked onchange="updateWindySettings()">
+            <label for="grayToWhite" class="box" style="background-color: rgba(120,120,120,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(140,140,140,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(160,160,160,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(180,180,180,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(200,200,200,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(200,210,210,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(200,220,220,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(200,230,230,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(200,240,240,0.5);"></label>
+            <label for="grayToWhite" class="box" style="background-color: rgba(200,255,255,0.5);"></label>
+            <br>
+            <input type="radio" id="blueToRed" name ="WindColorscale" value="1" onchange="updateWindySettings()">
+            <label for="blueToRed" class="box" style="background-color: rgba(0,0,255,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(5,50,250,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(20,80,245,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(23,110,231,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(92,122,200,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(204,126,120,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(222,118,91,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(251,79,23,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(254,55, 5,0.5);"></label>
+            <label for="blueToRed" class="box" style="background-color: rgba(255,0, 0,0.5);"></label>
+            <br>
+            <input type="radio" id="cyanToPurple" name ="WindColorscale" value="2" onchange="updateWindySettings()">
+            <label for="cyanToPurple" class="box" style="background-color: rgba(0, 255, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(100, 240, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(135, 225, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(160, 208, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(181, 192, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(198, 173, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(180, 155, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(170, 133, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(160, 109, 255,0.5);"></label>
+            <label for="cyanToPurple" class="box" style="background-color: rgba(165, 55, 253, 0.5)"></label>
+            <br>
+        </form>
+        <form id="WaveForm"  style="display: none">
+          <p>Wave Color Selection:</p>
+          <input type="radio" id="White" name ="WaveColorscale" value="3" checked onchange="updateWindySettings()">
+            <label for="White" class="box" style="width: 100px; background-color: rgba(200,255,255, 1)"></label>
+            <br>
+            <input type="radio" id="Red" name ="WaveColorscale" value="4" onchange="updateWindySettings()">
+            <label for="Red" class="box" style="width: 100px; background-color: rgba(255,0, 0, 1);"></label>
+            <br>
+            <input type="radio" id="Purple" name ="WaveColorscale" value="5" onchange="updateWindySettings()">
+            <label for="Purple" class="box" style="width: 100px; background-color: rgba(165, 55, 253, 1);"></label>
+            <br>
+            <input type="radio" id="Black" name ="WaveColorscale" value="6" onchange="updateWindySettings()">
+            <label for="Black" class="box" style="width: 100px; background-color: rgba(0, 0, 0, 1);"></label>
+            <br>
+          </form>
+		  <br/>
+		  <div id="AnimationSection" class="subHeading">Animation Settings</div>
+		  <s2 style="width: 200px;">
+          <label class="sliderHeader">Animation Speed</label>
+          <value class="sliderValue" id="animationSpeedDisplay">3</value> Second(s)
+          <input type="range" autocomplete="off" min="1" max="5" value="3" class="animationSlider settingSlider" id="animationSpeed" onchange="updateAnimationSpeed()">
+        </s2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide-in Panel for Point Forecast -->
+  <div id="pf-panel" class="pf-panel pf-panel--from-bottom js-pf-panel-main">
+    <header class="pf-panel__header">
+      <div id="pf-tabs" class="pf-tabs"></div>
+      <div id="pf-latlong" class="pf-latlong"></div>
+      <div class="pf-panel__close js-pf-close">&times;</div>
+    </header>
+    <div class="pf-panel__container">
+      <div id="panel-content" class="pf-panel__content">
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend Area -->
+  <div id="legendDiv">
+    <div class="closebtn" onclick="hideLegend()">&times;</div>
+    <div id="legendArea"></div>
+  </div>
+  
+  <!-- Loading Div -->
+  <div id="loadingGifFrame">
+    <div id="loadingGifPanel">
+      ...Loading...<br/>
+      <span id="nameLabel2"></span><br/>
+      <div class="loading2 bar">
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts that need to read div ids above -->
+<script type="text/javascript" src="javascript/slideInPanel.js"></script>
+<script type="text/javascript">
+  // Give focus to the DOD accept button, so you can press Enter
+  document.getElementById("DODAcceptBtn").focus();
+</script>
+</body>
+</html>

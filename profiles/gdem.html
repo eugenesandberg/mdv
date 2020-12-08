@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script>
+var theData = "[{'variable': 'sound_speed', 'depth': 0.0, 'value': 1515.5015127357753}, {'variable': 'sound_speed', 'depth': 2.0, 'value': 1515.4092784643935}, {'variable': 'sound_speed', 'depth': 4.0, 'value': 1515.3139693862825}, {'variable': 'sound_speed', 'depth': 6.0, 'value': 1515.266709070377}, {'variable': 'sound_speed', 'depth': 8.0, 'value': 1515.2617210196406}, {'variable': 'sound_speed', 'depth': 10.0, 'value': 1515.2585068718515}, {'variable': 'sound_speed', 'depth': 15.0, 'value': 1515.243017620167}, {'variable': 'sound_speed', 'depth': 20.0, 'value': 1515.2245130483418}, {'variable': 'sound_speed', 'depth': 25.0, 'value': 1515.0064906726082}, {'variable': 'sound_speed', 'depth': 30.0, 'value': 1514.6589473225754}, {'variable': 'sound_speed', 'depth': 35.0, 'value': 1514.1952232658475}, {'variable': 'sound_speed', 'depth': 40.0, 'value': 1513.8184478243863}, {'variable': 'sound_speed', 'depth': 45.0, 'value': 1513.3742426106544}, {'variable': 'sound_speed', 'depth': 50.0, 'value': 1512.940472636114}, {'variable': 'sound_speed', 'depth': 55.0, 'value': 1512.0219986881339}, {'variable': 'sound_speed', 'depth': 60.0, 'value': 1510.4776316622883}, {'variable': 'sound_speed', 'depth': 65.0, 'value': 1509.1403496849946}, {'variable': 'sound_speed', 'depth': 70.0, 'value': 1507.9240143965155}, {'variable': 'sound_speed', 'depth': 75.0, 'value': 1506.9966828441493}, {'variable': 'sound_speed', 'depth': 80.0, 'value': 1506.4452985251346}, {'variable': 'sound_speed', 'depth': 85.0, 'value': 1505.8970440064484}, {'variable': 'sound_speed', 'depth': 90.0, 'value': 1505.4177585449843}, {'variable': 'sound_speed', 'depth': 95.0, 'value': 1505.011596930188}, {'variable': 'sound_speed', 'depth': 100.0, 'value': 1504.7131031927904}, {'variable': 'sound_speed', 'depth': 110.0, 'value': 1504.295618152115}, {'variable': 'sound_speed', 'depth': 120.0, 'value': 1503.8743057620309}, {'variable': 'sound_speed', 'depth': 130.0, 'value': 1503.4533569650791}, {'variable': 'sound_speed', 'depth': 140.0, 'value': 1503.0609147887378}, {'variable': 'sound_speed', 'depth': 150.0, 'value': 1502.724960043151}, {'variable': 'sound_speed', 'depth': 160.0, 'value': 1502.394505503925}, {'variable': 'sound_speed', 'depth': 170.0, 'value': 1502.0339205020764}, {'variable': 'sound_speed', 'depth': 180.0, 'value': 1501.66341147609}, {'variable': 'sound_speed', 'depth': 190.0, 'value': 1501.3293412507567}, {'variable': 'sound_speed', 'depth': 200.0, 'value': 1501.0054320664494}, {'variable': 'sound_speed', 'depth': 220.0, 'value': 1500.3610220207897}, {'variable': 'sound_speed', 'depth': 240.0, 'value': 1499.734168534796}, {'variable': 'sound_speed', 'depth': 260.0, 'value': 1499.127358634114}, {'variable': 'sound_speed', 'depth': 280.0, 'value': 1498.5211927046162}, {'variable': 'sound_speed', 'depth': 300.0, 'value': 1497.8454608727534}, {'variable': 'sound_speed', 'depth': 350.0, 'value': 1496.1913434569574}, {'variable': 'sound_speed', 'depth': 400.0, 'value': 1494.880978197656}, {'variable': 'sound_speed', 'depth': 500.0, 'value': 1494.1830466038182}, {'variable': 'sound_speed', 'depth': 600.0, 'value': 1494.4023114926038}, {'variable': 'sound_speed', 'depth': 700.0, 'value': 1494.0527438360932}, {'variable': 'sound_speed', 'depth': 800.0, 'value': 1492.2827806193932}, {'variable': 'sound_speed', 'depth': 900.0, 'value': 1489.0170005931338}, {'variable': 'sound_speed', 'depth': 1000.0, 'value': 1485.7556151792712}, {'variable': 'sound_speed', 'depth': 1100.0, 'value': 1483.9144527364115}, {'variable': 'sound_speed', 'depth': 1200.0, 'value': 1483.3089266638733}, {'variable': 'sound_speed', 'depth': 1300.0, 'value': 1483.760483394511}, {'variable': 'sound_speed', 'depth': 1400.0, 'value': 1484.6929906910643}, {'variable': 'sound_speed', 'depth': 1500.0, 'value': 1485.794477998468}, {'variable': 'sound_speed', 'depth': 1600.0, 'value': 1487.068665501133}, {'variable': 'sound_speed', 'depth': 1800.0, 'value': 1489.707831423488}, {'variable': 'sound_speed', 'depth': 2000.0, 'value': 1492.4589566800798}, {'variable': 'sound_speed', 'depth': 2200.0, 'value': 1495.2758113847012}, {'variable': 'sound_speed', 'depth': 2400.0, 'value': 1498.0832520647175}, {'variable': 'sound_speed', 'depth': 2600.0, 'value': 1500.8711911514695}, {'variable': 'sound_speed', 'depth': 2800.0, 'value': 1503.702771498203}, {'variable': 'sound_speed', 'depth': 3000.0, 'value': 1506.5607927128904}, {'variable': 'sound_speed', 'depth': 3200.0, 'value': 1509.4512308799408}, {'variable': 'sound_speed', 'depth': 3400.0, 'value': 1512.4216168793268}, {'variable': 'sound_speed', 'depth': 3600.0, 'value': 1515.50600505485}, {'variable': 'sound_speed', 'depth': 3800.0, 'value': 1518.6044415994052}, {'variable': 'sound_speed', 'depth': 4000.0, 'value': 1521.6909319195322}, {'variable': 'sound_speed', 'depth': 4200.0, 'value': 1524.7917088551965}, {'variable': 'sound_speed', 'depth': 4400.0, 'value': 1528.0088102342124}, {'variable': 'sound_speed', 'depth': 4600.0, 'value': 1531.3188804738068}, {'variable': 'sound_speed', 'depth': 4800.0, 'value': 1534.7275888067413}, {'variable': 'sound_speed', 'depth': 5000.0, 'value': 1538.32727333157}, {'variable': 'sound_speed', 'depth': 5200.0, 'value': 1541.9759667713663}, {'variable': 'sound_speed', 'depth': 5400.0, 'value': 1545.6456857920407}]";
+
+var jData = JSON.parse(theData.replace(/'/g, '"'))
+
+//console.log(jData);
+
+
+//Read the data
+function writeGraph(data){
+	console.log(data);
+	// set the dimensions and margins of the graph
+// set the dimensions and margins of the graph
+var margin = {top: 30, right: 0, bottom: 30, left: 50},
+    width = 410 - margin.left - margin.right,
+    height = 410 - margin.top - margin.bottom;
+
+//Read the data
+
+  // group the data: I want to draw one line per group
+  var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
+    .key(function(d) { return d.variable;})
+    .entries(data);
+
+  // What is the list of groups?
+  allKeys = sumstat.map(function(d){return d.key})
+
+  // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
+  var svg = d3.select("#profileChart")
+    .selectAll("uniqueChart")
+    .data(sumstat)
+    .enter()
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+  // Add X axis --> it is a date format
+  var x = d3.scaleLinear()
+    .domain([d3.min(data, function(d) { return +d.value; })-2,
+d3.max(data, function(d) { return +d.value; })+2]
+)
+    .range([ 0,width ]);
+  svg
+    .append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).ticks(7));
+
+  //Add Y axis
+  var y = d3.scaleLinear()
+    .domain([d3.max(data, function(d) { return +d.depth; }),0])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y).ticks(20));
+
+  // color palette
+  var color = d3.scaleOrdinal()
+    .domain(allKeys)
+    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+
+  // Draw the line
+  svg
+    .append("path")
+      .attr("fill", "none")
+      .attr("stroke", function(d){ return color(d.key) })
+      .attr("stroke-width", 1.9)
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.value); })
+          .y(function(d) { return y(+d.depth); })
+          (d.values)
+      })
+
+  // Add titles
+  svg
+    .append("text")
+    .attr("text-anchor", "start")
+    .attr("y", -5)
+    .attr("x", 0)
+    .text(function(d){ return(d.key)})
+    .style("fill", function(d){ return color(d.key) })
+
+
+}
+
+</script>
+</head>
+
+<body>
+
+<div id="demo">
+<h1>The XMLHttpRequest Object</h1>
+lat <input type='text' id='lat'></input>
+long <input type='text' id='lon'></input>
+file# <input type='text' id='file'></input>
+<button type="button" onclick="loadDoc()">Change Content</button>
+</div>
+
+<script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+	  writeGraphs(JSON.parse(this.responseText.replace(/'/g, '"')));
+    }
+  };
+  var lat=document.getElementById('lat').value;
+  var lon=document.getElementById('lon').value;
+  var file=document.getElementById('file').value;
+  var url = "http://localhost:8080/gdem.jsp?lat="+lat+"&long="+lon+"&file="+file;
+  console.log(url);
+  xhttp.open("GET", url, true);
+  xhttp.send();
+}
+</script>
+<div id="profileCharts"></div>
+<script>writeGraph(jData);</script>
+</body>
+</html>

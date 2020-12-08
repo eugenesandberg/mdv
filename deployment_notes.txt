@@ -1,0 +1,20 @@
+DEPLOYMENT README
+
+Update the following files while deploying:
+
+== index.html ==
+Find the security banner and update it to one of the following:
+  <div id="securityBanner">UNCLASSIFIED</div>
+  <div id="securityBanner">SECRET</div>
+  <div id="securityBanner">TOP SECRET</div>
+
+== css/layout.css ==
+Near the top is the #securityBanner ID tag
+Update the background and color setting to match the security classification
+
+== javascript/layout.js ==
+Note the variables near the top of the file:
+  LAYER_LIST_URL
+  windWave
+  WINDY_FILES_URL
+Ensure these are set properly for the deployment environment

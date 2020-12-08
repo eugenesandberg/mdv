@@ -1,0 +1,131 @@
+.chartLoading{
+	display: none;
+	color: #194182;
+	background-image:	url("../images/loading_cube.gif");
+	background-position: center;                             
+	width: 270px;
+	height: 250px;
+	text-align: center;
+	font-weight: bold;
+	z-index: 99;
+	border-radius: 25px;
+	border: 1px solid black;
+}
+
+.profileTooltip {
+	fill: #2b2929;
+	font-family: Georgia;
+	font-size: 150%;
+}
+
+.profileLegend {
+	font-size: 11px;
+	text-anchor: middle;
+	cursor: pointer;
+} 
+
+.profileCharts {	
+	display: none;
+	overflow: hidden;
+	border: 1px solid #ccc;
+	background-color: #194182;
+	width: 450px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 98;
+}
+.profileTitle {
+	margin: 10px;
+	color: #194182;
+	font-size: 22px;
+}
+
+/* Style the buttons that are used to open the profileCharts content */
+.profileTabContainter {	
+	background-color: inherit;
+	width: 450px;
+	height: 45px;
+}
+.profileTabContainter button {
+	color:#d6e6ff;
+	background-color: #194182;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 14px 16px;
+	transition: 0.3s;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-right: 2px;
+}
+
+
+/* Change background color of buttons on hover */
+.profileTabContainter button:hover {
+	background-color: #3063b3;
+}
+
+/* Create an active/current tablink class */
+.profileTabContainter button.active {
+	background-color: #3b7adb;
+}
+
+.tabcontentContainer {
+	width: inherit;
+	background-color: #ebf2ff;
+}
+
+/* Style the tab content */
+.tabcontent {
+	display: none;
+	padding: 6px 12px;
+	border: 1px solid #ccc;
+	border-top: none;
+	background-color: #ebf2ff;
+	width: inherit;
+}
+#sound_speedChart {
+	display: block;
+}
+.esriPopupWrapper .contentPane, 
+.esriPopupWrapper .actionsPane, 
+.esriPopupWrapper .pointer,
+div.outerPointer.left,
+div.outerPointer.right{
+  background-color:#ebf2ff;
+}
+div.pointer.top,
+div.pointer.topLeft,
+div.pointer.topRight{
+  background-color:#18225e !important;
+}
+.esriPopupWrapper .titlePane{
+  background-color:#18225e;
+  color:#f0f1f5;
+  font-weight:bold;
+}
+
+.closeProfile {	
+	cursor: pointer;
+	color: #d6e6ff;	
+	font-size: 15px;
+	float: right;
+  padding-left: 7px;
+  padding-right:7px;
+  text-align:center;
+	font-family: arial;
+  transition: 0.2s;
+}
+.closeProfile:hover {
+	color: #EEEEEE;
+  background: #CA2F2F;
+  border-top-right-radius: 5px;
+}
+
+/* force the infoWindow to use the custom title buttons 
+---required because the popup onHide and onClose actions kick off on every new point click 
+---and we cannot have the closeProfilePopup() kick off because it will destroy all of the data 
+*/
+.titleButton { display:none;}

@@ -1,0 +1,20 @@
+.li-content{
+    display:block;   
+    padding: .25em 1em;     
+}
+.li-layerTitle{
+    background-color: #d9e5fa;
+    padding: 1em;
+    border-radius: 1em 1em 0 0;
+}
+.li-latLon,.li-value{
+    border-color: #d9e5fa;
+    border-width: 0 2px;
+    border-style: none solid none solid;
+}
+.li-value{    
+    border-color: #d9e5fa;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;    
+    border-radius: 0 0 1em 1em;
+}

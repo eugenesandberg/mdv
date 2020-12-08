@@ -1,0 +1,342 @@
+/* Adapted from https://codyhouse.co/gem/css-slide-in-panel */
+
+/* -------------------------------- 
+
+Slide In Panel - by CodyHouse.co
+
+-------------------------------- */
+.pf-btn {
+  width: 100px;
+  display:inline;
+  cursor: pointer;
+  padding: 5px 10px 5px 10px;
+  margin: 0px 2px;
+  color: #ffffff;
+  background-color: #00407d;
+  border-radius: 10px 10px 10px 10px;
+  font-size: 1.0rem;
+  transition: 0.3s;                               
+}
+.pf-btn.disabled {
+  width: 100px;
+  display:inline;
+  cursor: not-allowed;
+  padding: 5px 10px 5px 10px;
+  margin: 0px 2px;
+  color: #ffffff;
+  background-color: #555;
+  border-radius: 10px 10px 10px 10px;
+  font-size: 1.0rem;
+  transition: 0.3s;                               
+}
+
+.pf-btn:hover {
+  background: #0067CA;
+}
+.pf-btn.disabled:hover {
+  background: #555;
+}
+
+.pf-buttons{  
+  display: none;
+  color:#d6e6ff;
+  margin-left: 64px;
+}
+.pf-buttons.show {
+  display: block;
+}
+
+.pf-latlong{  
+  display: inline-block;
+  float: right;
+  padding: 4px 6px;
+  margin-right: 70px; /*width of .pf-panel__close +3*/
+  margin-top: 18px;
+  color: #FFFFFF;
+  background: #333333;
+  border-radius: 6px;
+}
+
+.pf-tab-btn {
+  display: inline-block;
+  cursor: pointer;
+  color: #CCCCCC;
+  background-color: #101030;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  transition: 0.3s;
+  border-radius: 12px;
+  margin: 0 2px 4px 2px;
+}
+.pf-tabs {
+  display: inline-block;
+  cursor: pointer;
+  height: 52px;
+}
+/* Create an active/current tablink class */
+.pf-tab-btn.active {
+  padding: 14px 16px;
+  background-color: #3b7adb;
+  color: #FFFFFF;
+  cursor: default;
+}
+
+
+.pf-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 33%;
+  width: 100%;
+  visibility: hidden;
+  -webkit-transition: visibility 0s 0.6s;
+  transition: visibility 0s 0.6s;
+  z-index: 51;
+}
+
+.pf-panel::after {
+  /* overlay layer */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 33%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-transition: background 0.3s 0.3s;
+  transition: background 0.3s 0.3s;
+}
+
+.pf-panel.pf-panel--is-visible {
+  visibility: visible;
+  -webkit-transition: visibility 0s 0s;
+  transition: visibility 0s 0s;
+}
+
+.pf-panel.pf-panel--is-visible::after {
+  -webkit-transition: background 0.3s 0s;
+  transition: background 0.3s 0s;
+}
+
+.pf-panel__header {
+  position: fixed;
+  width: 100%;
+  line-height: 20px;
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1));
+  /* background: #00407d; */
+  z-index: 53;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  -webkit-transition: -webkit-transform 0.3s 0s;
+  transition: -webkit-transform 0.3s 0s;
+  transition: transform 0.3s 0s;
+  transition: transform 0.3s 0s, -webkit-transform 0.3s 0s;
+  -webkit-transform: translateX(-100%);
+      -ms-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+
+.pf-panel__header h1 {
+  color: #ffffff;
+  padding-left: 5%;
+}
+
+.pf-panel--from-bottom .pf-panel__header {
+  bottom: 33%;
+  padding-bottom: 5px;
+}
+
+.pf-panel--is-visible .pf-panel__header {
+  -webkit-transition: -webkit-transform 0.3s 0.3s;
+  transition: -webkit-transform 0.3s 0.3s;
+  transition: transform 0.3s 0.3s;
+  transition: transform 0.3s 0.3s, -webkit-transform 0.3s 0.3s;
+  -webkit-transform: translateX(0px);
+      -ms-transform: translateX(0px);
+          transform: translateX(0px);
+  -webkit-transition-delay: 0.3s;
+  transition-delay: 0.3s;
+}
+
+@media only screen {
+  .pf-panel__header {
+    width: 100%;
+  }
+}
+
+.pf-panel__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 46px;
+  width: 60px;
+  /* image replacement */
+  display: inline-block;
+  overflow: hidden;                    
+  white-space: nowrap;
+  background: #000000;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 46px;
+  color: #FFFFFF;
+  font-size: 46px;
+  transition: 0.2s;
+}
+
+.pf-panel__close::before, .pf-panel__close::after {
+  /* close icon created in CSS */
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  height: 3px;
+  width: 20px;
+  background-color: #424f5c;
+  /* this fixes a bug where pseudo elements are slighty off position */
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+
+.pf-panel__close:hover {
+  background-color: #CA2F2F;
+  cursor: pointer;
+}
+
+.pf-panel__close:hover::before, .pf-panel__close:hover::after {
+  background-color: #ffffff;
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+  transition: transform 0.3s, -webkit-transform 0.3s;
+}
+
+.pf-panel__container {
+  position: fixed;
+  width: 100%;
+  height: 33%;
+  bottom: 33%;
+  background: #dbe2e9;
+  z-index: 52;
+
+  font-size: 1.4rem;
+  color: #424f5c;
+  line-height: 1.4;
+
+  -webkit-transition: -webkit-transform 0.3s 0.3s;
+  transition: -webkit-transform 0.3s 0.3s;
+  transition: transform 0.3s 0.3s;
+  transition: transform 0.3s 0.3s, -webkit-transform 0.3s 0.3s;
+}
+
+.pf-panel--from-bottom .pf-panel__container {
+  bottom: 0;
+  -webkit-transform: translate3d(0, 100%, 0);
+          transform: translate3d(0, 100%, 0);
+}
+
+.pf-panel--is-visible .pf-panel__container {
+  -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+  -webkit-transition-delay: 0s;
+          transition-delay: 0s;
+}
+
+@media only screen {
+  .pf-panel__container {
+    width: 100%;
+  }
+}
+
+.pf-panel__content {
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  /* smooth scrolling on touch devices */
+  -webkit-overflow-scrolling: touch;
+
+  box-sizing: border-box;
+}
+
+.pf-panel__content p {
+  font-size: 1.4rem;
+  color: #424f5c;
+  line-height: 1.4;
+  margin: 2em 0;
+}
+
+.pf-panel__content p:first-of-type {
+  margin-top: 0;
+}
+
+@media only screen and (min-width: 768px) {
+  .pf-panel__content p {
+    font-size: 1.6rem;
+    line-height: 1.6;
+  }
+}
+
+
+.pf-panelTable{
+  background: #000000;
+  border-style:solid;
+  border-color:black;
+  border-width:2px;
+  font-size: 1.3rem;
+}
+
+.pf-panelTable th{
+  text-align: center;
+  border-style:solid;
+  color: #ffffff;
+  background-color: #00407d;
+  border-color:black;
+  border-width:1px;
+  padding:3px;
+  /*
+    This width should be enough to fit the width of Kelvin temperatures
+    A separate CSS class handles the width of the header cells for depths
+    That class is called pf-depthHeader below
+  */
+  min-width: 54px;
+}
+
+.pf-panelTable th.pf-depthHeader {
+  min-width: 64px;
+}
+.pf-panelTable td{
+  text-align: right;
+  border-style:solid;
+  border-color:black;
+  border-width:1px;
+  padding:3px;
+  color: black;
+  background: #FFFFFF;
+}
+
+.pf-dvTable{
+  display:none;
+}
+.pf-dvTable.show{
+  display: block;
+}
+
+td.blankCell {
+  background: #000000;
+}
+
+td.noDataCell {
+  text-align: center;
+  color: #FFFFFF;
+  background: #000000;
+  cursor: default;
+}
+
+.headerDateCell {
+  border-radius: 20px 20px 0 0;
+  background: #3C4248 !important; /* override .pf-panelTable th */
+}
